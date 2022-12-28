@@ -1,0 +1,23 @@
+.piece-div {
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.piece-img {
+    height: 80%;
+    width: 80%;
+    object-fit: contain;
+}
+
+.king-img {
+    height: 90%;
+    width: 90%;
+}
+.pawn-img {
+    height: 70%;
+    width: 70%;
+}
