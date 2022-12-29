@@ -16,12 +16,15 @@ function Board() {
     ["rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"]
   ])
 
+  const [turn, setTurn] = useState("white");
+
   return (
     <>
       <div id="board">
+        
         {currentBoard.map((row, r) => {
           return row.map((val, c) => {
-            return <div className="tile" style={r % 2 == 0 ? c % 2 == 0 ? {backgroundColor: "white"} : {backgroundColor: "gray"} : c % 2 == 0 ? {backgroundColor: "gray"} : {backgroundColor: "white"}} key={`${r}-${c}`}></div>
+            return <div id={`tile-${r}-${c}`} className="tile" style={r % 2 == 0 ? c % 2 == 0 ? {backgroundColor: "#9c2525"} : {backgroundColor: "#18191a"} : c % 2 == 0 ? {backgroundColor: "#18191a"} : {backgroundColor: "#9c2525"}} key={`${r}-${c}`}></div>
           })
         })}
 
@@ -31,9 +34,27 @@ function Board() {
               return "";
             }
             if (val.substring(0, 4) == "opp-") {
-              return <Piece type={val.substring(4)} color="black" pos={`${r}-${c}`} key={`${r}-${c}`}/>
+              return <Piece
+                type={val.substring(4)}
+                color="black"
+                pos={`${r}-${c}`}
+                currentBoard={currentBoard}
+                setCurrentBoard={setCurrentBoard}
+                turn={turn}
+                setTurn={turn}
+                key={`${r}-${c}`}
+              />
             } else {
-              return <Piece type={val} color="white" pos={`${r}-${c}`} key={`${r}-${c}`}/>
+              return <Piece
+                type={val}
+                color="white"
+                pos={`${r}-${c}`}
+                currentBoard={currentBoard}
+                setCurrentBoard={setCurrentBoard}
+                turn={turn}
+                setTurn={turn}
+                key={`${r}-${c}`}
+              />
             }
           })
         })}
