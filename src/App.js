@@ -18,8 +18,11 @@ function Board() {
 
   const [turn, setTurn] = useState("white");
 
+  const [selectedPiece, setSelectedPiece] = useState(null);
+
   const [possMoves, setPossMoves] = useState([]);
 
+  // highlight possible movement tiles
   useEffect(() => {
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
@@ -30,9 +33,30 @@ function Board() {
 
     for (let i = 0; i < possMoves.length; i++) {
       let tile = document.getElementById(`tile-${possMoves[i][0]}-${possMoves[i][1]}`);
-      tile.style.border = "3px solid blue";
+      tile.style.border = "5px solid white";
     }
   }, [possMoves]);
+
+
+  const MovePiece = (oldPos, newPos) => {
+    setCurrentBoard((prev) => {
+      let newBoard = prev;
+      let piece = prev[oldPos[0]][oldPos[1]];
+      newBoard[oldPos[0]][oldPos[1]] = "";
+      console.log(piece);
+      newBoard[newPos[0]][newPos[1]] = piece;
+      console.log(newBoard);
+      return newBoard;
+    })
+    setTurn(prev => {
+      if (prev == "white") {
+        return "black";
+      }
+      return "white";
+    })
+    setSelectedPiece(null);
+    console.log(currentBoard);
+  }
 
   return (
     <>
@@ -40,7 +64,12 @@ function Board() {
         
         {currentBoard.map((row, r) => {
           return row.map((val, c) => {
-            return <div id={`tile-${r}-${c}`} className="tile" style={r % 2 == 0 ? c % 2 == 0 ? {backgroundColor: "#9c2525"} : {backgroundColor: "#18191a"} : c % 2 == 0 ? {backgroundColor: "#18191a"} : {backgroundColor: "#9c2525"}} key={`${r}-${c}`}></div>
+            return <div id={`tile-${r}-${c}`} className="tile" style={r % 2 == 0 ? c % 2 == 0 ? {backgroundColor: "#9c2525"} : {backgroundColor: "#18191a"} : c % 2 == 0 ? {backgroundColor: "#18191a"} : {backgroundColor: "#9c2525"}} onClick={() => {
+              if (turn == "white" && document.getElementById(`tile-${r}-${c}`).style.border == "5px solid white") {
+                MovePiece(selectedPiece, [r, c]);
+                
+              }
+            }} key={`${r}-${c}`}></div>
           })
         })}
 
@@ -59,6 +88,7 @@ function Board() {
                 turn={turn}
                 setTurn={turn}
                 setPossMoves={setPossMoves}
+                setSelectedPiece={setSelectedPiece}
                 key={`${r}-${c}`}
               />
             } else {
@@ -71,6 +101,7 @@ function Board() {
                 turn={turn}
                 setTurn={turn}
                 setPossMoves={setPossMoves}
+                setSelectedPiece={setSelectedPiece}
                 key={`${r}-${c}`}
               />
             }
