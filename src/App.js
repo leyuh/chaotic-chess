@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import "./styles/App.css";
 
 import Piece from './Piece';
@@ -17,6 +17,23 @@ function Board() {
   ])
 
   const [turn, setTurn] = useState("white");
+
+  const [possMoves, setPossMoves] = useState([]);
+
+  useEffect(() => {
+    console.log(possMoves);
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        let tile = document.getElementById(`tile-${r}-${c}`);
+        tile.style.border = "0px";
+      }
+    }
+
+    for (let i = 0; i < possMoves.length; i++) {
+      let tile = document.getElementById(`tile-${possMoves[i][0]}-${possMoves[i][1]}`);
+      tile.style.border = "3px solid blue";
+    }
+  }, [possMoves]);
 
   return (
     <>
@@ -42,6 +59,7 @@ function Board() {
                 setCurrentBoard={setCurrentBoard}
                 turn={turn}
                 setTurn={turn}
+                setPossMoves={setPossMoves}
                 key={`${r}-${c}`}
               />
             } else {
@@ -53,6 +71,7 @@ function Board() {
                 setCurrentBoard={setCurrentBoard}
                 turn={turn}
                 setTurn={turn}
+                setPossMoves={setPossMoves}
                 key={`${r}-${c}`}
               />
             }

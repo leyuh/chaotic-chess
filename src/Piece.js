@@ -1,4 +1,5 @@
 import "./styles/Piece.css";
+import React, {useState} from 'react';
 
 const pieceImages = {
     pawn: require("./images/pawn.png"),
@@ -10,11 +11,20 @@ const pieceImages = {
 }
 
 const Piece = (props) => {
-    const {type, color, pos, currentBoard, setCurrentBoard, turn, setTurn} = props;
+    const {type, color, pos, currentBoard, setCurrentBoard, turn, setTurn, setPossMoves} = props;
 
     let row = parseInt(pos.substring(0, 1));
     let col = parseInt(pos.substring(2, 3));
 
+    const SelectTile = (val, r, c) => {
+
+        let tile = document.getElementById(`tile-${r}-${c}`);
+        if (val) {
+            tile.style.border = "3px solid blue";
+        } else {
+            tile.style.border = "0px";
+        }
+    }
     const InBounds = (pos) => {
         let rowPos = pos[0];
         let colPos = pos[1];
@@ -160,11 +170,7 @@ const Piece = (props) => {
 
     return <div className={`piece-div ${type}`} style={{top: `${row*100+14}px`, left: `${col*100+14}px`}} onClick={() => {
         let possPos = getPossibleNewPositions();
-        console.log(possPos);
-        for (let i = 0; i < possPos.length; i++) {
-            console.log("ping");
-            document.getElementById(`tile-${possPos[i][0]}-${possPos[i][1]}`).style = {backgroundColor : "#0000ff"};
-        }
+        setPossMoves(possPos);
     }}>
         <img className={`piece-img ${type}-img`}  src={pieceImages[type]} style={
             color == "black" ? {filter: "brightness(30%) contrast(140%)"} : {}
