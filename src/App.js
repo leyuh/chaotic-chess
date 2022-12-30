@@ -21,7 +21,6 @@ function Board() {
   const [possMoves, setPossMoves] = useState([]);
 
   useEffect(() => {
-    console.log(possMoves);
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
         let tile = document.getElementById(`tile-${r}-${c}`);

@@ -29,7 +29,6 @@ const Piece = (props) => {
         let rowPos = pos[0];
         let colPos = pos[1];
 
-
         if (rowPos >= 0 && rowPos <= 7) {
             if (colPos >= 0 && colPos <= 7) {
                 return true;
@@ -54,6 +53,7 @@ const Piece = (props) => {
     }
 
     const GetSlope = (pos, newPos) => {
+    
         let rowPos = pos[0];
         let colPos = pos[1];
 
@@ -64,7 +64,7 @@ const Piece = (props) => {
 
         let rowChange = (newRowPos - rowPos);
         let colChange = (newColPos - colPos);
-
+    
         if (pos == newPos) {
             return "none";
         }
@@ -80,16 +80,12 @@ const Piece = (props) => {
         return "unclassified";
     }
 
-    const PathClear = (pos, newPos, type) => {
+    const PathClear = (pos, newPos) => {
         let rowPos = pos[0];
         let colPos = pos[1];
 
         let newRowPos = newPos[0];
         let newColPos = newPos[1];
-
-        if (type == "knight") {
-            return true;
-        }
 
         // get slope
         let slope = GetSlope(pos, newPos);
@@ -102,12 +98,13 @@ const Piece = (props) => {
 
         for (let r = rowRange[0]; r <= rowRange[1]; r++) {
             for (let c = colRange[0]; c <= colRange[1]; c++) {
-                if (GetSlope(pos, [r, c]) != slope || GetSlope([r, c], newPos) != slope) {
-                    return false;
+                if (GetSlope(pos, [r, c]) == slope && GetSlope([r, c], newPos) == slope) {
+                    if (Occupant([r, c]) != null) {
+                        return false;
+                    }
                 }
             }
         }
-
         return true;
     }
 
@@ -115,53 +112,143 @@ const Piece = (props) => {
         return (color == "black" ? num : (num * -1));
     }
 
+    const PawnMoves = (newPos, possibleNewPositions) => {
+         // if piece is in original place, can move forward 2
+         if ((color == "white" && row == 6) || (color == "black" && row == 1)) {
+            newPos = [(row + (GetForward(2, color))), col];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+
+        // normal move forward 1
+        newPos = [(row + (GetForward(1, color))), col];
+        if (InBounds(newPos) && Occupant(newPos) == null) {
+            possibleNewPositions.push(newPos);
+        }
+
+        // right diagonal
+        newPos = [row + (GetForward(1, color)), (col + 1)];
+        if (InBounds(newPos) && (Occupant(newPos) != null && Occupant(newPos) != color)) {
+            possibleNewPositions.push(newPos);
+        }
+
+        // left diagonal
+        newPos = [(row + (GetForward(1, color))), (col - 1)];
+        if (InBounds(newPos) && (Occupant(newPos) != null && Occupant(newPos) != color)) {
+            possibleNewPositions.push(newPos);
+        }
+
+    }
+    
+    const RookMoves = (newPos, possibleNewPositions) => {
+        // can move all spaces forward
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row + i), col];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces backward
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row - i), col];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces left
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row, col + i)];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces right
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row, col - i)];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+    }
+
+    const KnightMoves = (newPos, possibleNewPositions) => {
+        // move in Ls (8 possible moves)
+        let moves = [[2, 1], [1, 2], [-2, 1], [-2, -1], [2, -1], [1, -2], [-1, 2], [-1, -2]];
+
+        for (let i = 0; i < moves.length; i++) {
+            newPos = [(row + moves[i][0]), (col + moves[i][1])];
+            if (InBounds(newPos) && Occupant(newPos) == null) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+    }
+
+    const BishopMoves = (newPos, possibleNewPositions) => {
+        // can move all spaces up-right
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row + i), col + i];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces down-left
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row - i), col - i];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces up-left
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row + i, col - i)];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+        // can move all spaces down-right
+        for (let i = 1; i < 8; i++) {
+            newPos = [(row - i, col + i)];
+            if (InBounds(newPos) && Occupant(newPos) == null && PathClear([row, col], newPos)) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+    }
+
+    const KingMoves = (newPos, possibleNewPositions) => {
+        // (8 possible moves)
+        let moves = [[1, 1], [1, -1], [-1, 1], [-1, -1], [0, -1], [0, 1], [1, 0], [-1, 0]];
+
+        for (let i = 0; i < moves.length; i++) {
+            newPos = [(row + moves[i][0]), (col + moves[i][1])];
+            if (InBounds(newPos) && Occupant(newPos) == null) {
+                possibleNewPositions.push(newPos);
+            }
+        }
+    }
+
     const getPossibleNewPositions = () => {
         let possibleNewPositions = [];
         let newPos;
         switch (type){
             case "pawn":
-                 // if piece is in original place, can move forward 2
-                if ((color == "white" && row == 6) || (color == "black" && row == 2)) {
-                    newPos = [(row + (GetForward(2, color))), col];
-                    if (InBounds(newPos) && Occupant(newPos) == null && PathClear(pos, newPos, type)) {
-                        possibleNewPositions.push(newPos);
-                    }
-                }
-
-                // normal move forward 1
-                newPos = [(row + (GetForward(1, color))), col];
-                if (InBounds(newPos) && Occupant(newPos) == null) {
-                    possibleNewPositions.push(newPos);
-                }
-
-                // right diagonal
-                newPos = [row + (GetForward(1, color)), (col + 1)];
-                if (InBounds(newPos) && (Occupant(newPos) != null && Occupant(newPos) != color)) {
-                    possibleNewPositions.push(newPos);
-                }
-
-                // left diagonal
-                newPos = [(row + (GetForward(1, color))), (col - 1)];
-                if (InBounds(newPos) && (Occupant(newPos) != null && Occupant(newPos) != color)) {
-                    possibleNewPositions.push(newPos);
-                }
-
+                PawnMoves(newPos, possibleNewPositions);
                 break;
             case "rook":
-                // can move all spaces forward
-                // can move all spaces sideways
+                RookMoves(newPos, possibleNewPositions);
                 break;
             case "knight":
-                // 2 forward, 1 sideways (8 possible moves)
+                KnightMoves(newPos, possibleNewPositions);
                 break;
             case "bishop":
-                // diagonal all spaces
+                BishopMoves(newPos, possibleNewPositions);
                 break;
             case "queen":
-                // all spaces diagonal, forward, back, sideways
+                RookMoves(newPos, possibleNewPositions);
+                BishopMoves(newPos, possibleNewPositions);
                 break;
             case "king":
-                // diagonal, forward, back, sideways 1 space
+                KingMoves(newPos, possibleNewPositions);
                 break;
         }
 
