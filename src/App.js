@@ -108,13 +108,14 @@ const GetSlope = (pos, newPos) => {
     if (colChange == 0) {
         return "vertical";
     }
-    if (rowChange == colChange) {
+    if (Math.abs(rowChange) == Math.abs(colChange)) {
         return "diagonal"
     }
     return "unclassified";
 }
 
 const PathClear = (pos, newPos) => {
+    console.log("A: ", pos, newPos);
     let rowPos = pos[0];
     let colPos = pos[1];
 
@@ -124,17 +125,23 @@ const PathClear = (pos, newPos) => {
     // get slope
     let slope = GetSlope(pos, newPos);
 
-    let rowRange = [Math.min(newRowPos, rowPos), Math.max(newRowPos, rowPos)];
-    let colRange = [Math.min(newColPos, colPos), Math.max(newColPos, colPos)];
+    let rowRange = [(Math.min(newRowPos, rowPos)), (Math.max(newRowPos, rowPos))];
+    let colRange = [(Math.min(newColPos, colPos)), (Math.max(newColPos, colPos))];
+
 
     // make sure every spot with slope between pos and newPos is available
 
     for (let r = rowRange[0]; r <= rowRange[1]; r++) {
         for (let c = colRange[0]; c <= colRange[1]; c++) {
             if (GetSlope(pos, [r, c]) == slope && GetSlope([r, c], newPos) == slope) {
-                if (Occupant([r, c]) != null) {
-                    return false;
+  
+                if ((r != pos[0] || c != pos[1]) && (r != newPos[0] || c != newPos[1])) {
+
+                  if (Occupant([r, c]) != null) {
+                      return false;
+                  }
                 }
+                
             }
         }
     }
@@ -175,6 +182,20 @@ const PawnMoves = (row, col, color, newPos, possibleNewPositions) => {
 }
 
 const RookMoves = (row, col, color, newPos, possibleNewPositions) => {
+  // can move all spaces left
+  for (let i = 1; i < 8; i++) {
+    newPos = [row, (col - i)];
+    if (InBounds(newPos) && Occupant(newPos) != color && PathClear([row, col], newPos)) {
+        possibleNewPositions.push(newPos);
+    }
+  }
+    // can move all spaces right
+    for (let i = 1; i < 8; i++) {
+        newPos = [row, col + i];
+        if (InBounds(newPos) && Occupant(newPos) != color && PathClear([row, col], newPos)) {
+            possibleNewPositions.push(newPos);
+        }
+    }
     // can move all spaces forward
     for (let i = 1; i < 8; i++) {
         newPos = [(row + i), col];
@@ -185,20 +206,6 @@ const RookMoves = (row, col, color, newPos, possibleNewPositions) => {
     // can move all spaces backward
     for (let i = 1; i < 8; i++) {
         newPos = [(row - i), col];
-        if (InBounds(newPos) && Occupant(newPos) != color && PathClear([row, col], newPos)) {
-            possibleNewPositions.push(newPos);
-        }
-    }
-    // can move all spaces left
-    for (let i = 1; i < 8; i++) {
-      newPos = [row, (col - i)];
-      if (InBounds(newPos) && Occupant(newPos) != color && PathClear([row, col], newPos)) {
-          possibleNewPositions.push(newPos);
-      }
-  }
-    // can move all spaces right
-    for (let i = 1; i < 8; i++) {
-        newPos = [row, col + i];
         if (InBounds(newPos) && Occupant(newPos) != color && PathClear([row, col], newPos)) {
             possibleNewPositions.push(newPos);
         }
