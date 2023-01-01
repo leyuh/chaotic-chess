@@ -22,6 +22,8 @@ function Board() {
 
   const [possMoves, setPossMoves] = useState([]);
 
+  const [winner, setWinner] = useState(null);
+
   // highlight possible movement tiles
   useEffect(() => {
     for (let r = 0; r < 8; r++) {
@@ -37,9 +39,58 @@ function Board() {
     }
   }, [possMoves]);
 
+  // when king is killed, declare winner
+  useEffect(() => {
+    let foundWhiteKing = false;
+    let foundBlackKing = false;
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (currentBoard[r][c] == "king") {
+          foundWhiteKing = true;
+        } else if (currentBoard[r][c] == "opp-king") {
+          foundBlackKing = true;
+        }
+      }
+    }
+
+    if (!foundWhiteKing || !foundBlackKing) {
+      setTurn("");
+      setSelectedPiece(null);
+      setPossMoves([]);
+    }
+    if (!foundWhiteKing) {
+      // black wins
+      setWinner("black");
+    }
+    if (!foundBlackKing) {
+      // white wins
+      setTurn("");
+      setSelectedPiece(null);
+      setPossMoves([]);
+      setWinner("white");
+    }
+  }, [currentBoard]);
+
+  // display win message
+  useEffect(() => {
+    let label = document.getElementById("win-label")
+    if (winner == null) {
+      label.style.visibility = "hidden";
+    }
+    if (winner == "black") {
+      label.style.color = "red";
+      label.innerHTML = "YOU LOSE";
+      label.style.visibility = "visible";
+    } else if (winner == "white") {
+      label.style.color = "green";
+      label.innerHTML = "YOU WIN!";
+      label.style.visibility = "visible";
+    }
+    }, [winner])
+
   // black movement
   useEffect(() => {
-    if (turn == "black") {
+    if (turn == "black" && winner == null) {
       let allPossibleMoves = [];
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
@@ -57,7 +108,8 @@ function Board() {
       MovePiece(allPossibleMoves[random][0], allPossibleMoves[random][1]);
 
     }
-  }, [turn])
+  }, [turn]);
+
 
 const InBounds = (pos) => {
     let rowPos = pos[0];
@@ -295,28 +347,41 @@ const getPossibleNewPositions = (row, col, color, type) => {
     return possibleNewPositions;
 }
 
-  const MovePiece = (oldPos, newPos) => {
+const MovePiece = (oldPos, newPos) => {
 
-    setCurrentBoard((prev) => {
-      let newBoard = [...prev];
-      let piece = prev[oldPos[0]][oldPos[1]];
-     
-      newBoard[oldPos[0]][oldPos[1]] = "";
-      newBoard[newPos[0]][newPos[1]] = piece;
-      return newBoard;
-    })
-    setTurn(prev => {
-      if (prev == "white") {
-        return "black";
-      }
-      return "white";
-    })
-    setPossMoves([]);
-    setSelectedPiece(null);
-  }
+  setCurrentBoard((prev) => {
+    let newBoard = [...prev];
+    let piece = prev[oldPos[0]][oldPos[1]];
+    
+    newBoard[oldPos[0]][oldPos[1]] = "";
+    newBoard[newPos[0]][newPos[1]] = piece;
+    return newBoard;
+  })
+  setTurn(prev => {
+    if (prev == "white") {
+      return "black";
+    }
+    return "white";
+  })
+  setPossMoves([]);
+  setSelectedPiece(null);
+}
 
   return (
     <>
+      <h1 id="win-label" style={{
+        position: "absolute",
+        left: "0px",
+        top: "0px",
+        width: "100vw",
+        height: "100vh",
+        fontSize: "150px",
+        textAlign: "center",
+        lineHeight: "70vh",
+        fontWeight: "900",
+        zIndex: "5"
+      }}>YOU WIN!</h1>
+
       <div id="board">
         
         {currentBoard.map((row, r) => {

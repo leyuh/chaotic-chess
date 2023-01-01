@@ -18,7 +18,7 @@ const Piece = (props) => {
 
     
 
-    return <div className={`piece-div ${type}`} style={{top: `${row*100+14}px`, left: `${col*100+14}px`}} onClick={() => {
+    return <div className={`piece-div ${type}`} style={{top: `calc(${row*6.25}vw + 35px)`, left: `calc(${col*6.25}vw + 25vw)`}} onClick={() => {
 
         if (turn == "white" && color == "white") {
             setSelectedPiece([row, col]);

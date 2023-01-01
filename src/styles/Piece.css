@@ -1,6 +1,6 @@
 .piece-div {
-    height: 100px;
-    width: 100px;
+    height: 6.25vw;
+    width: 6.25vw;
     position: absolute;
     display: flex;
     justify-content: center;

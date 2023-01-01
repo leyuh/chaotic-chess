@@ -1,27 +1,34 @@
 #board {
-    height: 800px;
-    width: 800px;
-    border: 5px solid black;
+    height: 50vw;
+    width: 50vw;
+    border-radius: 5px;
+    border: 15px solid rgb(56, 46, 38);
     display: grid;
-    grid-template-rows: 100px 100px 100px 100px 100px 100px 100px 100px;
-    grid-template-columns: 100px 100px 100px 100px 100px 100px 100px 100px;
+    grid-template-rows: 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw;
+    grid-template-columns: 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw 6.25vw;
+    margin: 20px;
 }
 
 .tile {
-    height: 100px;
-    width: 100px;
+    height: 6.25vw;
+    width: 6.25vw;
     box-sizing: border-box;
 }
 
 #info {
     position: absolute;
-    left: 850px;
-    top: 0px;
+    background-color: #18191a;
+    top: calc(50vw + 70px);
+    padding: 10px;
+    border-radius: 5px;
+    width: 25vw;
+    color: white;
+    border: 10px solid rgb(56, 46, 38);
 }
 
 #info > ul >li > h3 {
     font-size: 25px;
-    margin: 0px;
+    margin: 10px;
 }
 
 #info > ul > li > h6 {
