@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/chaotic-chess/static/css/main.eef7e913.css",
+    "main.js": "/chaotic-chess/static/js/main.967a7c5f.js",
+    "static/media/rook.png": "/chaotic-chess/static/media/rook.f12254894c9d093bdfeb.png",
+    "static/media/bishop.png": "/chaotic-chess/static/media/bishop.4f926db02bce4eb171bf.png",
+    "static/media/queen.png": "/chaotic-chess/static/media/queen.79d1867ea5c8b6aa96ee.png",
+    "static/media/pawn.png": "/chaotic-chess/static/media/pawn.e14ceb834b6cf4a8f495.png",
+    "static/media/king.png": "/chaotic-chess/static/media/king.84c92d56aca5ab3e9d55.png",
+    "static/media/knight.png": "/chaotic-chess/static/media/knight.e252031df390c0d26e1d.png",
+    "index.html": "/chaotic-chess/index.html",
+    "main.eef7e913.css.map": "/chaotic-chess/static/css/main.eef7e913.css.map",
+    "main.967a7c5f.js.map": "/chaotic-chess/static/js/main.967a7c5f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.eef7e913.css",
+    "static/js/main.967a7c5f.js"
+  ]
+}
